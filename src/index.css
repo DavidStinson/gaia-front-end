@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Barlow */
+@font-face {
+  font-family: "Barlow Condensed Bold";
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/barlow-condensed-bold.woff2")format("woff2");
+  font-display: swap;
+}
+
+/* Barlow Semi Condensed */
+@font-face {
+  font-family: "Barlow Semi Condensed SemiBold";
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/barlow-semi-condensed-semibold.woff2") format("woff2");
+  font-display: swap;
+}
+
+/* Nunito Sans */
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: italic;
+  font-weight: 400;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-italic.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-700.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: italic;
+  font-weight: 700;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-700italic.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: normal;
+  font-weight: 800;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-800.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito Sans";
+  font-style: italic;
+  font-weight: 800;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/nunito-sans-v15-latin-800italic.woff2") format("woff2");
+  font-display: swap;
+}
+
+/* Cascadia Mono */
+@font-face {
+  font-display: swap;
+  font-family: "Cascadia Mono";
+  font-style: normal;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/cascadia-mono.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Cascadia Mono";
+  font-style: italic;
+  src: url("https://pages.git.generalassemb.ly/modular-curriculum-all-courses/universal-resources-internal/static/v2/fonts/cascadia-mono-italic.woff2") format("woff2");
+}
+
+@theme {
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-background: #0d1117;
+  --color-background-subtle: #151b23;
+  --color-background-hover: #21262d;
+  --color-background-code-block: #010409;
+  --color-background-code-inline: #010409;
+  --color-background-inline-code: #151b23;
+  --color-background-nav: #151d2d;
+  --color-background-emphasis: #6e7681;
+  --color-background-success: #238636;
+  --color-background-accent: #1f6feb;
+  --color-background-attention: #9e6a03;
+  --color-background-warning: #da3633;
+
+  --color-text-default: #f3f6fc;
+  --color-text-muted: #9198a1;
+  --color-text-inline-code: #56d364;
+  --color-text-success: #3fb950;
+  --color-text-accent: #e41f26; /* GA Red */
+  --color-text-attention: #d29922;
+  --color-text-warning: #f85149;
+  --color-text-file: #db6d28;
+  --color-text-keys: #8250df;
+  --color-link-default: #4493f8;
+  --color-link-hover: #60b0ff;
+
+  --color-border-default: #3d444d;
+  --color-border-muted: #3d444db3;
+  --color-border-success: #238636;
+  --color-border-accent: #0969da;
+  --color-border-attention: #bf8700;
+  --color-border-warning: #cf222e;
+
+  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", 
+    sans-serif;
+  --font-system-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --font-barlow-condensed-bold: "Barlow Condensed Bold", var(--font-system);
+  --font-barlow-semi-condensed-semibold: "Barlow Semi Condensed SemiBold", 
+    var(--font-system);
+  --font-nunito-sans: "Nunito Sans", var(--font-system);
+  --font-cascadia-mono: "Cascadia Mono", var(--font-system-mono);
+}
+
+:root {
+  font-family: var(--font-nunito-sans);
+  font-weight: 400;
+  color: var(--color-text-default);
+  background-color: var(--color-background);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: content-box;
+}
+
+a {
+  color: var(--color-link-default);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-link-hover);
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  font-family: var(--font-nunito-sans);
+  font-size: var(--text-base);
+}
+
+h1 {
+  font-family: var(--font-barlow-condensed-bold);
+}
+
+h2 {
+  font-family: var(--font-barlow-condensed-bold);
+  font-size: var(--text-3xl);
+}
+
+h3 {
+  font-family: var(--font-barlow-semi-condensed-semibold);
+  font-size: var(--text-2xl);
+}
+
+h4 {
+  font-family: var(--font-barlow-semi-condensed-semibold);
+  font-size: var(--text-xl);
+}
