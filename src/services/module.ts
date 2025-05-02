@@ -2,11 +2,11 @@
 import { z } from "zod"
 
 // helpers
-import { tryCatch } from "../../helpers/try-catch.js"
+import { tryCatch } from "../helpers/try-catch.js"
 
 // types
-import type { GenerateModuleOutline, ModuleOutline } from "../../types/module-outline.js"
-import type { Module } from "../../types/module.js"
+import type { GenerateModuleOutline, ModuleOutline } from "../types/module-outline.js"
+import type { Module } from "../types/module.js"
 
 // module constants
 const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL

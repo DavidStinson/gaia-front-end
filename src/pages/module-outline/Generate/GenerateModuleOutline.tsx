@@ -7,8 +7,8 @@ import ArrayInput from "../../../components/form/ArrayInput/ArrayInput"
 import FormInput from "../../../components/form/FormInput/FormInput"
 
 // services
-import { submitModuleData } from "../../services/module-outline"
-import { submitModuleDataCrew } from "../../services/module"
+import { submitModuleData } from "../../../services/module-outline"
+import { submitModuleDataCrew } from "../../../services/module"
 
 // helpers
 import { tryCatch } from "../../../helpers/try-catch"

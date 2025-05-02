@@ -5,10 +5,10 @@ import { z } from "zod"
 import type {
   GenerateModuleOutline,
   ModuleOutline,
-} from "../../types/module-outline.js"
+} from "../types/module-outline.js"
 
 // helpers
-import { tryCatch } from "../../helpers/try-catch.js"
+import { tryCatch } from "../helpers/try-catch.js"
 
 // module constants
 const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL

@@ -8,7 +8,7 @@ import ArrayInput from "../../../components/form/ArrayInput/ArrayInput"
 import MicrolessonDisplay from "../../../components/form/MicrolessonDisplay/MicrolessonDisplay"
 
 // services
-import { submitModuleOutlineData } from "../../services/module"
+import { submitModuleOutlineData } from "../../../services/module"
 
 // helpers
 import { tryCatch } from "../../../helpers/try-catch"
@@ -134,7 +134,7 @@ function EditLessonOutline() {
     setError(null)
 
     const submissionData = cleanUpData()
-    
+
     const [response, error] = await tryCatch(
       submitModuleOutlineData(submissionData)
     )
