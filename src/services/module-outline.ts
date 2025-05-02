@@ -33,40 +33,36 @@ const moduleOutlineSchema = z.object({
 
 // services
 async function submitModuleData(data: GenerateModuleOutline) {
-  try {
-    const [response, responseError] = await tryCatch(
-      fetch(`${GA_SYSTEMS_BACK_END_URL}/api/v1/module-outline/generate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }),
-    )
+  const [response, responseError] = await tryCatch(
+    fetch(`${GA_SYSTEMS_BACK_END_URL}/api/v1/module-outline/generate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }),
+  )
 
-    if (responseError) {
-      throw new Error(`Issue building module outline: ${responseError.message}`)
-    }
-
-    if (!response.ok) {
-      throw new Error(`HTTP error - status code: ${response.status}`)
-    }
-
-    const generatedModuleOutline = await response.json()
-
-    const { error: zodError } = moduleOutlineSchema.safeParse(
-      generatedModuleOutline,
-    )
-
-    if (zodError) {
-      throw new Error(`Received invalid module outline: ${zodError.message}`)
-    }
-
-    return generatedModuleOutline as ModuleOutline
-  } catch (error) {
-    console.error("Error submitting module:", error)
-    throw error
+  if (responseError) {
+    throw new Error(`Issue building module outline: ${responseError.message}`)
   }
+
+  if (!response.ok) {
+    throw new Error(`HTTP error - status code: ${response.status}`)
+  }
+
+  const generatedModuleOutline = await response.json()
+
+  const { error: zodError } = moduleOutlineSchema.safeParse(
+    generatedModuleOutline,
+  )
+
+  if (zodError) {
+    throw new Error(`Received invalid module outline: ${zodError.message}`)
+  }
+
+  return generatedModuleOutline as ModuleOutline
+
 }
 
 export { submitModuleData }
