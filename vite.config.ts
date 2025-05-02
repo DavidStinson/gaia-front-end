@@ -4,6 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/gaia-front-end/",
+  base: "/GA-AI-Systems/gaia-front-end/",
   plugins: [react(), tailwindcss()],
 })
