@@ -1,7 +1,8 @@
+// npm
 import { Link } from "react-router"
 
+// component
 function PageNotFound () {
-
   return (
     <div className="w-full flex place-content-center">
       <main className="flex flex-col items-start mb-4">

@@ -1,9 +1,12 @@
+// routes
 import AppRouter from "./routes/AppRouter"
+
+// components
 import Navbar from "./components/NavBar/NavBar"
 import Footer from "./components/Footer/Footer"
 
+// component
 function App() {
-
   return (
     <>
       <Navbar />
