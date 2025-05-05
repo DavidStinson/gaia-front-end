@@ -3,6 +3,7 @@ import { z } from "zod"
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
+import { useWs } from "../services-ws/module-outline.js"
 
 // types
 import type { GenerateModuleOutline, ModuleOutline } from "../types/module-outline.js"
@@ -50,7 +51,13 @@ async function submitModuleOutlineData(data: ModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status}`)
   }
 
-  const generatedModule = await response.json()
+  const responseData = await response.json()
+
+  const generatedModule = await useWs(
+    responseData.taskId,
+    "module",
+    "subscribe",
+  )
 
   const { error } = moduleSchema.safeParse(generatedModule)
 
@@ -73,10 +80,12 @@ async function submitModuleDataCrew(data: GenerateModuleOutline) {
   )
 
   if (responseError) {
+    console.error(responseError)
     throw new Error(`Issue building module: ${responseError.message}`)
   }
 
   if (!response.ok) {
+    console.error(response)
     throw new Error(`HTTP error - status code: ${response.status}`)
   }
 
@@ -85,6 +94,7 @@ async function submitModuleDataCrew(data: GenerateModuleOutline) {
   const { error } = moduleSchema.safeParse(generatedModule)
 
   if (error) {
+    console.error(error)
     throw new Error(`Received invalid module: ${error.message}`)
   }
 

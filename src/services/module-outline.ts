@@ -9,6 +9,7 @@ import type {
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
+import { useWs } from "../services-ws/module-outline.js"
 
 // module constants
 const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL
@@ -51,7 +52,17 @@ async function submitModuleData(data: GenerateModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status}`)
   }
 
-  const generatedModuleOutline = await response.json()
+  const responseData = await response.json()
+
+  // establish websocket connection and wait for response containing specific
+  // data associated with the generatedModuleOutlineId
+  const generatedModuleOutline = await useWs(
+    responseData.taskId,
+    "moduleOutline",
+    "subscribe",
+  )
+
+  console.log("generatedModuleOutline", generatedModuleOutline)
 
   const { error: zodError } = moduleOutlineSchema.safeParse(
     generatedModuleOutline,
@@ -62,7 +73,6 @@ async function submitModuleData(data: GenerateModuleOutline) {
   }
 
   return generatedModuleOutline as ModuleOutline
-
 }
 
 export { submitModuleData }
