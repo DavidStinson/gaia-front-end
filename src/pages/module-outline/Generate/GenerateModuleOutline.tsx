@@ -71,6 +71,8 @@ function GenerateModuleOutline() {
     setIsSubmitting(true)
     setError(null)
 
+    if (isSubmitting) return
+
     const submissionData = cleanUpData()
 
     if (isCrew) {
@@ -238,8 +240,8 @@ function GenerateModuleOutline() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent hover:bg-background-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold cursor-pointer ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent hover:bg-background-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold ${
+            isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
           }`}
           onClick={(e) => handleSubmit(e, false)}
         >
