@@ -33,7 +33,10 @@ const moduleOutlineSchema = z.object({
 })
 
 // services
-async function submitModuleData(data: GenerateModuleOutline) {
+async function submitModuleData(
+  data: GenerateModuleOutline,
+  onProgress?: (progress: number) => void,
+) {
   const [response, responseError] = await tryCatch(
     fetch(`${GA_SYSTEMS_BACK_END_URL}/api/v1/module-outline/generate`, {
       method: "POST",
@@ -54,25 +57,24 @@ async function submitModuleData(data: GenerateModuleOutline) {
 
   const responseData = await response.json()
 
-  // establish websocket connection and wait for response containing specific
-  // data associated with the generatedModuleOutlineId
-  const generatedModuleOutline = await useWs(
-    responseData.taskId,
-    "moduleOutline",
-    "subscribe",
-  )
-
-  console.log("generatedModuleOutline", generatedModuleOutline)
-
-  const { error: zodError } = moduleOutlineSchema.safeParse(
-    generatedModuleOutline,
-  )
-
-  if (zodError) {
-    throw new Error(`Received invalid module outline: ${zodError.message}`)
-  }
-
-  return generatedModuleOutline as ModuleOutline
+  return new Promise<ModuleOutline>((resolve, reject) => {
+    useWs(responseData.taskId, "moduleOutline", "subscribe", {
+      onProgress,
+      onComplete: async (result) => {
+        const { error: zodError } = moduleOutlineSchema.safeParse(result)
+        if (zodError) {
+          reject(
+            new Error(`Received invalid module outline: ${zodError.message}`),
+          )
+          return
+        }
+        resolve(result as ModuleOutline)
+      },
+      onError: (error) => {
+        reject(error)
+      },
+    })
+  })
 }
 
 export { submitModuleData }

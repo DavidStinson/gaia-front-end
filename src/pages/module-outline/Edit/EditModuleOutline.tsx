@@ -32,6 +32,7 @@ function EditLessonOutline() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [progress, setProgress] = useState<number>(0)
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -130,22 +131,23 @@ function EditLessonOutline() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setProgress(0)
     setIsSubmitting(true)
     setError(null)
 
     const submissionData = cleanUpData()
 
-    const [response, error] = await tryCatch(
-      submitModuleOutlineData(submissionData)
+    const [response, responseError] = await tryCatch(
+      submitModuleOutlineData(submissionData, (newProgress) =>
+        setProgress(newProgress),
+      ),
     )
 
-    if (error) {
-      handleSubmitError(error)
+    if (responseError) {
+      handleSubmitError(responseError)
       setIsSubmitting(false)
       return
     }
-    console.log(response)
-
     navigate(`/module/output`, { state: { response } })
     setIsSubmitting(false)
   }
@@ -157,16 +159,15 @@ function EditLessonOutline() {
     )
 
     const rebuiltMicrolessons = formData.microlessons.map((microlesson) => {
-      
       let numMinutes = parseInt(microlesson.minutes)
 
       if (isNaN(numMinutes)) numMinutes = 0
 
-      return{
-      ...microlesson,
-      outline: microlesson.outline.filter((step) => step.trim() !== ""),
-      minutes: numMinutes.toString(),
-    }
+      return {
+        ...microlesson,
+        outline: microlesson.outline.filter((step) => step.trim() !== ""),
+        minutes: numMinutes.toString(),
+      }
     })
 
     return {
@@ -192,6 +193,20 @@ function EditLessonOutline() {
         {error && (
           <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
             {error}
+          </div>
+        )}
+
+        {isSubmitting && progress >= 0 && (
+          <div className="mb-4">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-background-accent h-2.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-600 mt-1">
+              Generating module... {progress}%
+            </p>
           </div>
         )}
 

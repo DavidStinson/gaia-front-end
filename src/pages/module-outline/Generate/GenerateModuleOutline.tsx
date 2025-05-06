@@ -33,6 +33,7 @@ function GenerateModuleOutline() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [progress, setProgress] = useState<number>(0)
 
   const updateItem = <K extends keyof FormData>(
     field: K,
@@ -70,6 +71,7 @@ function GenerateModuleOutline() {
     e.preventDefault()
     setIsSubmitting(true)
     setError(null)
+    setProgress(0)
 
     const submissionData = cleanUpData()
 
@@ -84,19 +86,19 @@ function GenerateModuleOutline() {
         return
       }
 
-      console.log(response)
-
       navigate(`/module/output`, { state: { response } })
     } else {
-      const [response, error] = await tryCatch(submitModuleData(submissionData))
+      const [response, error] = await tryCatch(
+        submitModuleData(submissionData, (newProgress) =>
+          setProgress(newProgress),
+        ),
+      )
 
       if (error) {
         handleSubmitError(error)
         setIsSubmitting(false)
         return
       }
-
-      console.log(response)
 
       navigate(`/module-outline/edit`, { state: { response } })
     }
@@ -137,6 +139,20 @@ function GenerateModuleOutline() {
         {error && (
           <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
             {error}
+          </div>
+        )}
+
+        {isSubmitting && progress >= 0 && (
+          <div className="mb-4">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-background-accent h-2.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-600 mt-1">
+              Generating module outline... {progress}%
+            </p>
           </div>
         )}
 
@@ -245,7 +261,9 @@ function GenerateModuleOutline() {
           }`}
           onClick={(e) => handleSubmit(e, false)}
         >
-          {isSubmitting ? "Submitting..." : "Submit to Option 2 (with the ability to edit the outline)"}
+          {isSubmitting
+            ? "Submitting..."
+            : "Submit to Option 2 (with the ability to edit the outline)"}
         </button>
       </form>
     </main>

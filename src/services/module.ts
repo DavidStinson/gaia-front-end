@@ -6,7 +6,10 @@ import { tryCatch } from "../helpers/try-catch.js"
 import { useWs } from "../services-ws/module-outline.js"
 
 // types
-import type { GenerateModuleOutline, ModuleOutline } from "../types/module-outline.js"
+import type {
+  GenerateModuleOutline,
+  ModuleOutline,
+} from "../types/module-outline.js"
 import type { Module } from "../types/module.js"
 
 // module constants
@@ -32,7 +35,10 @@ const moduleSchema = z.object({
   microlessons: z.array(microlessonSchema),
 })
 
-async function submitModuleOutlineData(data: ModuleOutline) {
+async function submitModuleOutlineData(
+  data: ModuleOutline,
+  onProgress: (progress: number) => void,
+) {
   const [response, responseError] = await tryCatch(
     fetch(`${GA_SYSTEMS_BACK_END_URL}/api/v1/module/generate`, {
       method: "POST",
@@ -53,19 +59,30 @@ async function submitModuleOutlineData(data: ModuleOutline) {
 
   const responseData = await response.json()
 
-  const generatedModule = await useWs(
-    responseData.taskId,
-    "module",
-    "subscribe",
-  )
+  return new Promise<Module>((resolve, reject) => {
+    let hasResolved = false
 
-  const { error } = moduleSchema.safeParse(generatedModule)
+    useWs(responseData.taskId, "module", "subscribe", {
+      onProgress: (progress) => onProgress(progress),
+      onComplete: async (result) => {
+        if (hasResolved) return
+        hasResolved = true
 
-  if (error) {
-    throw new Error(`Received invalid module: ${error.message}`)
-  }
+        const { error } = moduleSchema.safeParse(result)
+        if (error) {
+          reject(new Error(`Received invalid module: ${error.message}`))
+          return
+        }
 
-  return generatedModule as Module
+        resolve(result as Module)
+      },
+      onError: (error) => {
+        if (hasResolved) return
+        hasResolved = true
+        reject(error)
+      },
+    })
+  })
 }
 
 async function submitModuleDataCrew(data: GenerateModuleOutline) {

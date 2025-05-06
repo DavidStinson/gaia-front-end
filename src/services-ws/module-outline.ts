@@ -1,45 +1,97 @@
 const wsBaseUrl = import.meta.env.VITE_GAIA_WEBSOCKET_BASE_URL
 
-async function useWs(taskId: string, taskType: string, msgType: string) {
-  return new Promise((resolve, reject) => {
-    const ws = new WebSocket(wsBaseUrl)
+type WsResponse = {
+  type: "complete" | "progress" | "error"
+  taskId: string
+  message: string | number
+}
 
-    ws.onopen = () => {
-      console.log("Connected to module outline websocket")
-      ws.send(
-        JSON.stringify({
-          taskId,
-          taskType,
-          msgType,
-        }),
-      )
+type WsCallbacks = {
+  onProgress?: (progress: number) => void
+  onComplete: (result: any) => void
+  onError: (error: Error) => void
+}
+
+let ws: WebSocket | null = null
+let isConnecting = false
+
+function connect(reject: (reason?: any) => void) {
+  if (ws || isConnecting) return
+
+  isConnecting = true
+  ws = new WebSocket(wsBaseUrl)
+
+  ws.onopen = () => {
+    isConnecting = false
+  }
+
+  ws.onclose = () => {
+    if (ws) {
+      ws = null
+    }
+    reject(new Error("Disconnected from module outline websocket"))
+    isConnecting = false
+  }
+
+  ws.onerror = (error) => {
+    console.error("Error from module outline websocket", error)
+    reject(new Error("Error from module outline websocket"))
+    ws?.close()
+  }
+}
+
+async function useWs(
+  taskId: string,
+  taskType: string,
+  msgType: string,
+  callbacks: WsCallbacks,
+) {
+  return new Promise<any>((resolve, reject) => {
+    if (!ws) {
+      connect(reject)
     }
 
-    ws.onmessage = (event) => {
-      console.log("Received message from module outline websocket", event)
-      const data = JSON.parse(event.data)
-      if (data.type === "task_completed") {
-        resolve(data.result)
+    // Set up message handler for this specific task
+    const messageHandler = (event: MessageEvent) => {
+      const data: WsResponse = JSON.parse(event.data)
+
+      if (data.taskId !== taskId) return
+
+      if (data.type === "complete") {
+        callbacks.onComplete(data.message)
+        ws?.removeEventListener("message", messageHandler)
         cleanup(ws)
+        resolve(data.message)
+      } else if (data.type === "progress") {
+        console.log("Progress from module outline websocket", data.message)
+        if (isNaN(Number(data.message))) return
+        callbacks.onProgress?.(Number(data.message))
       } else if (data.type === "error") {
-        reject(new Error(data.message))
-        cleanup(ws)
+        callbacks.onError?.(new Error(data.message as string))
+        ws?.removeEventListener("message", messageHandler)
+        reject(new Error(data.message as string))
       }
     }
 
-    ws.onclose = () => {
-      console.log("Disconnected from module outline websocket")
-      reject(new Error("WebSocket connection closed"))
-      cleanup(ws)
+    // Add message handler
+    ws?.addEventListener("message", messageHandler)
+
+    // Send the message when the connection is ready
+    const sendMessage = () => {
+      if (ws?.readyState === WebSocket.OPEN) {
+        ws.send(
+          JSON.stringify({
+            taskId,
+            taskType,
+            msgType,
+          }),
+        )
+      } else {
+        setTimeout(sendMessage, 100)
+      }
     }
 
-    ws.onerror = (error) => {
-      console.error("Error from module outline websocket", error)
-      reject(error)
-      cleanup(ws)
-    }
-
-    function cleanup(ws: WebSocket) {
+    function cleanup(ws: WebSocket | null) {
       if (ws) {
         ws.close()
       }
