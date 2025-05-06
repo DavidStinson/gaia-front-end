@@ -228,10 +228,8 @@ function GenerateModuleOutline() {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent hover:bg-background-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold cursor-pointer ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          disabled={true}
+          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold opacity-50 cursor-not-allowed`}
           onClick={(e) => handleSubmit(e, true)}
         >
           {isSubmitting ? "Submitting..." : "Submit to Option 1"}
@@ -245,7 +243,9 @@ function GenerateModuleOutline() {
           }`}
           onClick={(e) => handleSubmit(e, false)}
         >
-          {isSubmitting ? "Submitting..." : "Submit to Option 2 (with the ability to edit the outline)"}
+          {isSubmitting
+            ? "Submitting..."
+            : "Submit to Option 2 (with the ability to edit the outline)"}
         </button>
       </form>
     </main>
