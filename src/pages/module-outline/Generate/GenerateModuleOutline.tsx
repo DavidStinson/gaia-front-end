@@ -27,8 +27,8 @@ function GenerateModuleOutline() {
     about: "",
     minutes: "",
     learnerPersona: "",
-    learningObjectives: [],
-    tools: [],
+    learningObjectives: [""],
+    tools: [""],
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
