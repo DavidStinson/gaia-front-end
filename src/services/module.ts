@@ -18,7 +18,7 @@ const microlessonSchema = z.object({
   id: z.coerce.number(),
   minutes: z.coerce.number(),
   learningObjective: z.string(),
-  outline: z.array(z.string()),
+  outline: z.string().array(),
   ledResponse: z.string(),
   smeResponse: z.string(),
 })
@@ -27,8 +27,8 @@ const moduleSchema = z.object({
   title: z.string(),
   about: z.string(),
   learnerPersona: z.string(),
-  prerequisites: z.array(z.string()),
-  tools: z.array(z.string()),
+  prerequisites: z.string().array(),
+  tools: z.string().array(),
   microlessons: z.array(microlessonSchema),
 })
 
@@ -89,7 +89,15 @@ async function submitModuleDataCrew(data: GenerateModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status}`)
   }
 
-  const generatedModule = await response.json()
+  const responseData = await response.json()
+
+  const generatedModule = await useWs(
+    responseData.taskId,
+    "module",
+    "subscribe",
+  )
+
+  console.log(generatedModule)
 
   const { error } = moduleSchema.safeParse(generatedModule)
 

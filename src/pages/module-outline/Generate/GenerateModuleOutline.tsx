@@ -230,8 +230,10 @@ function GenerateModuleOutline() {
 
         <button
           type="submit"
-          disabled={true}
-          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold opacity-50 cursor-not-allowed`}
+          disabled={isSubmitting}
+          className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent hover:bg-background-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold ${
+            isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          }`}
           onClick={(e) => handleSubmit(e, true)}
         >
           {isSubmitting ? "Submitting..." : "Submit to Option 1"}
