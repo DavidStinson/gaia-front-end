@@ -42,7 +42,7 @@ function MicrolessonDisplay({
       />
 
       <FormInput
-        label="Module Duration (minutes)"
+        label="Microlesson Duration (minutes)"
         id={`minutes-${microlesson.id}`}
         name={`minutes-${microlesson.id}`}
         value={`${microlesson.minutes}`}
