@@ -49,7 +49,12 @@ function MicrolessonOutput() {
   const ledResponses = response.microlessons.map((microlesson) => {
     return (
       <div className="border rounded-lg p-4 mb-4" key={microlesson.id}>
-        <p className="text-lg font-bold mb-2">{microlesson.title}</p>
+        <div className="flex justify-between items-end mb-2">
+          <p className="text-lg font-bold">{microlesson.title}</p>
+          <span className="text-sm text-gray-300 ml-2">
+            {microlesson.minutes} minutes
+          </span>
+        </div>
         <button
           type="button"
           className="bg-background-accent text-white px-4 py-2 rounded-md ml-2 hover:bg-background-accent-hover hover:cursor-pointer"
