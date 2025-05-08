@@ -1,6 +1,8 @@
-const wsBaseUrl = import.meta.env.VITE_GAIA_WEBSOCKET_BASE_URL
+// constants
+const wsBaseUrl = import.meta.env.VITE_GAIA_WEBSOCKET_BASE_URL as string
 
-async function useWs(taskId: string, taskType: string, msgType: string) {
+// service
+async function wsService(taskId: string, taskType: string, msgType: string) {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(wsBaseUrl)
 
@@ -35,16 +37,14 @@ async function useWs(taskId: string, taskType: string, msgType: string) {
 
     ws.onerror = (error) => {
       console.error("Error from module outline websocket", error)
-      reject(error)
+      reject(new Error(`Error from module outline websocket ${error.type}`))
       cleanup(ws)
     }
 
     function cleanup(ws: WebSocket) {
-      if (ws) {
-        ws.close()
-      }
+      ws.close()
     }
   })
 }
 
-export { useWs }
+export { wsService }

@@ -26,27 +26,27 @@ function MicrolessonDisplay({
     <div className="border rounded-lg p-4 mb-4">
       <FormInput
         label="Title"
-        id={`title-${microlesson.id}`}
-        name={`title-${microlesson.id}`}
+        id={`title-${microlesson.id.toString()}`}
+        name={`title-${microlesson.id.toString()}`}
         value={microlesson.title}
-        onChange={(e) => onUpdate("title", e.target.value)}
+        onChange={(e) => {onUpdate("title", e.target.value)}}
       />
 
       <FormInput
         label="Learning Objective"
-        id={`objective-${microlesson.id}`}
-        name={`objective-${microlesson.id}`}
+        id={`objective-${microlesson.id.toString()}`}
+        name={`objective-${microlesson.id.toString()}`}
         value={microlesson.learningObjective}
-        onChange={(e) => onUpdate("learningObjective", e.target.value)}
+        onChange={(e) => {onUpdate("learningObjective", e.target.value)}}
         type="textarea"
       />
 
       <FormInput
         label="Microlesson Duration (minutes)"
-        id={`minutes-${microlesson.id}`}
-        name={`minutes-${microlesson.id}`}
-        value={`${microlesson.minutes}`}
-        onChange={(e) => onUpdate("minutes", e.target.value)}
+        id={`minutes-${microlesson.id.toString()}`}
+        name={`minutes-${microlesson.id.toString()}`}
+        value={microlesson.minutes.toString()}
+        onChange={(e) => {onUpdate("minutes", e.target.value)}}
       />
 
       <ArrayInput

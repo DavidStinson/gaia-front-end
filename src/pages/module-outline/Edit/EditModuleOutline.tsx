@@ -40,27 +40,27 @@ function EditLessonOutline() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const updateItem = <K extends keyof FormData>(
-    field: K,
+  const updateItem = (
+    field: keyof Pick<FormData, 'tools' | 'prerequisites'>,
     index: number,
     value: string,
   ) => {
     if (Array.isArray(formData[field])) {
-      const newArray = [...(formData[field] as string[])]
+      const newArray = [...(formData[field])]
       newArray[index] = value
       setFormData((prev) => ({ ...prev, [field]: newArray }))
     }
   }
 
-  const addItem = <K extends keyof FormData>(field: K) => {
+  const addItem = (field: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
       [field]: [...(prev[field] as string[]), ""],
     }))
   }
 
-  const removeItem = <K extends keyof FormData>(field: K, index: number) => {
-    const newArray = [...(formData[field] as string[])]
+  const removeItem = (field: keyof FormData, index: number) => {
+    const newArray = Array.from(formData[field] as string[])
     newArray.splice(index, 1)
     setFormData((prev) => ({ ...prev, [field]: newArray }))
   }
@@ -148,7 +148,7 @@ function EditLessonOutline() {
     }
     console.log(response)
 
-    navigate(`/module/output`, { state: { response } })
+    await navigate(`/module/output`, { state: { response } })
     setIsSubmitting(false)
   }
 
@@ -179,7 +179,7 @@ function EditLessonOutline() {
     }
   }
 
-  function handleSubmitError(error: any) {
+  function handleSubmitError(error: unknown) {
     setError(
       error instanceof Error
         ? error.message
@@ -220,11 +220,11 @@ function EditLessonOutline() {
         <ArrayInput
           label="Module Tools"
           values={formData.tools}
-          onUpdate={(index: number, value: string) =>
+          onUpdate={(index: number, value: string) => {
             updateItem("tools", index, value)
-          }
-          onAdd={() => addItem("tools")}
-          onRemove={(index: number) => removeItem("tools", index)}
+          }}
+          onAdd={() => {addItem("tools")}}
+          onRemove={(index: number) => {removeItem("tools", index)}}
           placeholder="Tool"
           required
         />
@@ -241,11 +241,11 @@ function EditLessonOutline() {
         <ArrayInput
           label="Prerequisites"
           values={formData.prerequisites}
-          onUpdate={(index: number, value: string) =>
+          onUpdate={(index: number, value: string) => {
             updateItem("prerequisites", index, value)
-          }
-          onAdd={() => addItem("prerequisites")}
-          onRemove={(index: number) => removeItem("prerequisites", index)}
+          }}
+          onAdd={() => {addItem("prerequisites")}}
+          onRemove={(index: number) => {removeItem("prerequisites", index)}}
           placeholder="Prerequisite"
           required
         />
@@ -256,16 +256,16 @@ function EditLessonOutline() {
             <MicrolessonDisplay
               key={microlesson.id}
               microlesson={microlesson}
-              onUpdate={(field, value) =>
+              onUpdate={(field, value) => {
                 handleMicrolessonChange(microlesson.id, field, value)
-              }
-              onOutlineUpdate={(index, value) =>
+              }}
+              onOutlineUpdate={(index, value) => {
                 handleMicrolessonOutlineChange(microlesson.id, index, value)
-              }
-              onOutlineAdd={() => handleMicrolessonOutlineAdd(microlesson.id)}
-              onOutlineRemove={(index) =>
+              }}
+              onOutlineAdd={() => {handleMicrolessonOutlineAdd(microlesson.id)}}
+              onOutlineRemove={(index) => {
                 handleMicrolessonOutlineRemove(microlesson.id, index)
-              }
+              }}
             />
           ))}
         </div>
@@ -282,7 +282,7 @@ function EditLessonOutline() {
           className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm text-white bg-background-accent hover:bg-background-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 font-bold ${
             isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
           }`}
-          onClick={handleSubmit}
+          onClick={(e) => {void handleSubmit(e)}}
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </button>

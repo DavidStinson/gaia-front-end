@@ -9,11 +9,11 @@ function MicrolessonOutput() {
   const location = useLocation()
   const { response } = location.state as { response: Module }
 
-  const [openMicrolessons, setOpenMicrolessons] = useState<Boolean[]>(
+  const [openMicrolessons, setOpenMicrolessons] = useState<boolean[]>(
     new Array(response.microlessons.length).fill(false),
   )
 
-  const [copiedMicrolessons, setCopiedMicrolessons] = useState<Boolean[]>(
+  const [copiedMicrolessons, setCopiedMicrolessons] = useState<boolean[]>(
     new Array(response.microlessons.length).fill(false),
   )
 
@@ -48,21 +48,23 @@ function MicrolessonOutput() {
 
   const ledResponses = response.microlessons.map((microlesson) => {
     return (
-      <div className="border rounded-lg p-4 mb-4">
+      <div className="border rounded-lg p-4 mb-4" key={microlesson.id}>
         <p className="text-lg font-bold mb-2">{microlesson.title}</p>
         <button
+          type="button"
           className="bg-background-accent text-white px-4 py-2 rounded-md ml-2 hover:bg-background-accent-hover hover:cursor-pointer"
-          onClick={() => toggleMicrolesson(microlesson.id)}
+          onClick={() => {toggleMicrolesson(microlesson.id)}}
         >
           {openMicrolessons[microlesson.id - 1]
             ? "Hide microlesson"
             : "View microlesson"}
         </button>
         <button
+          type="button"
           className="bg-background-accent text-white px-4 py-2 rounded-md ml-2 hover:bg-background-accent-hover hover:cursor-pointer"
-          onClick={() =>
-            copyToClipboard(microlesson.ledResponse, microlesson.id)
-          }
+          onClick={() => {
+            void copyToClipboard(microlesson.ledResponse, microlesson.id)
+          }}
         >
           {copiedMicrolessons[microlesson.id - 1]
             ? "Copied!"

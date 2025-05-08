@@ -9,10 +9,10 @@ import type {
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
-import { useWs } from "../services-ws/module-outline.js"
+import { wsService } from "../services-ws/module-outline.js"
 
 // module constants
-const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL
+const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL as string
 
 // zod
 const microlessonSchema = z.object({
@@ -49,14 +49,14 @@ async function submitModuleData(data: GenerateModuleOutline) {
   }
 
   if (!response.ok) {
-    throw new Error(`HTTP error - status code: ${response.status}`)
+    throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
   const responseData = await response.json()
 
   // establish websocket connection and wait for response containing specific
   // data associated with the generatedModuleOutlineId
-  const generatedModuleOutline = await useWs(
+  const generatedModuleOutline = await wsService(
     responseData.taskId,
     "moduleOutline",
     "subscribe",

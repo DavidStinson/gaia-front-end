@@ -37,16 +37,16 @@ function ArrayInput({
             <input
               type="text"
               value={value}
-              onChange={(e) => onUpdate(index, e.target.value)}
+              onChange={(e) => {onUpdate(index, e.target.value)}}
               className={inputClassName}
-              placeholder={`${placeholder} ${index + 1}`}
+              placeholder={`${placeholder} ${(index + 1).toString()}`}
               required={required && index === 0}
               readOnly={readOnly}
             />
             {!readOnly && values.length > 1 && (
               <button
                 type="button"
-                onClick={() => onRemove(index)}
+                onClick={() => {onRemove(index)}}
                 className={removeButtonClassName}
               >
                 Remove
@@ -57,7 +57,7 @@ function ArrayInput({
         {!readOnly && (
           <button
             type="button"
-            onClick={onAdd}
+            onClick={() => {onAdd()}}
             className={addButtonClassName}
           >
             Add another

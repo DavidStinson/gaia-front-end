@@ -3,14 +3,14 @@ import { z } from "zod"
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
-import { useWs } from "../services-ws/module-outline.js"
+import { wsService } from "../services-ws/module-outline.js"
 
 // types
 import type { GenerateModuleOutline, ModuleOutline } from "../types/module-outline.js"
 import type { Module } from "../types/module.js"
 
 // module constants
-const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL
+const GA_SYSTEMS_BACK_END_URL = import.meta.env.VITE_GAIA_BACK_END_URL as string
 
 // zod
 const microlessonSchema = z.object({
@@ -48,12 +48,12 @@ async function submitModuleOutlineData(data: ModuleOutline) {
   }
 
   if (!response.ok) {
-    throw new Error(`HTTP error - status code: ${response.status}`)
+    throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
   const responseData = await response.json()
 
-  const generatedModule = await useWs(
+  const generatedModule = await wsService(
     responseData.taskId,
     "module",
     "subscribe",
@@ -86,12 +86,12 @@ async function submitModuleDataCrew(data: GenerateModuleOutline) {
 
   if (!response.ok) {
     console.error(response)
-    throw new Error(`HTTP error - status code: ${response.status}`)
+    throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
   const responseData = await response.json()
 
-  const generatedModule = await useWs(
+  const generatedModule = await wsService(
     responseData.taskId,
     "module",
     "subscribe",
