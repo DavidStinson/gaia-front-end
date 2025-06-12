@@ -9,6 +9,9 @@ import type {
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
+import { validateResponseData } from "../helpers/service.js"
+
+// services
 import { wsService } from "../services-ws/module-outline.js"
 
 // module constants
@@ -52,12 +55,14 @@ async function submitModuleData(data: GenerateModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
-  const responseData = await response.json()
+  const responseData = (await response.json()) as unknown
+
+  const { taskId } = validateResponseData(responseData)
 
   // establish websocket connection and wait for response containing specific
   // data associated with the generatedModuleOutlineId
   const generatedModuleOutline = await wsService(
-    responseData.taskId,
+    taskId,
     "moduleOutline",
     "subscribe",
   )

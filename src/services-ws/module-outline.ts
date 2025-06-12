@@ -19,13 +19,34 @@ async function wsService(taskId: string, taskType: string, msgType: string) {
 
     ws.onmessage = (event) => {
       console.log("Received message from module outline websocket", event)
-      const data = JSON.parse(event.data)
-      if (data.type === "task_completed") {
+
+      if (typeof event.data !== "string") {
+        reject(new Error("Invalid data received from websocket"))
+        return
+      }
+
+      const data = JSON.parse(event.data) as unknown
+      if (
+        !data ||
+        typeof data !== "object" || 
+        !("type" in data) 
+      ) {
+        reject(new Error("Invalid data received from websocket"))
+        return
+      }
+
+      if (data.type === "task_completed" && "result" in data) {
         resolve(data.result)
         cleanup(ws)
-      } else if (data.type === "error") {
+      } else if (
+        data.type === "error" &&
+        "message" in data &&
+        typeof data.message === "string"
+      ) {
         reject(new Error(data.message))
         cleanup(ws)
+      } else {
+        reject(new Error("Unexpected message received from websocket"))
       }
     }
 

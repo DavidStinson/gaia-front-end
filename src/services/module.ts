@@ -3,10 +3,16 @@ import { z } from "zod"
 
 // helpers
 import { tryCatch } from "../helpers/try-catch.js"
+import { validateResponseData } from "../helpers/service.js"
+
+// services
 import { wsService } from "../services-ws/module-outline.js"
 
 // types
-import type { GenerateModuleOutline, ModuleOutline } from "../types/module-outline.js"
+import type {
+  GenerateModuleOutline,
+  ModuleOutline,
+} from "../types/module-outline.js"
 import type { Module } from "../types/module.js"
 
 // module constants
@@ -51,13 +57,11 @@ async function submitModuleOutlineData(data: ModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
-  const responseData = await response.json()
+  const responseData = (await response.json()) as unknown
 
-  const generatedModule = await wsService(
-    responseData.taskId,
-    "module",
-    "subscribe",
-  )
+  const { taskId } = validateResponseData(responseData)
+
+  const generatedModule = await wsService(taskId, "module", "subscribe")
 
   const { error } = moduleSchema.safeParse(generatedModule)
 
@@ -89,13 +93,11 @@ async function submitModuleDataCrew(data: GenerateModuleOutline) {
     throw new Error(`HTTP error - status code: ${response.status.toString()}`)
   }
 
-  const responseData = await response.json()
+  const responseData = (await response.json()) as unknown
 
-  const generatedModule = await wsService(
-    responseData.taskId,
-    "module",
-    "subscribe",
-  )
+  const { taskId } = validateResponseData(responseData)
+
+  const generatedModule = await wsService(taskId, "module", "subscribe")
 
   console.log(generatedModule)
 
